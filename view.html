@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Movie</title>
+    <style>
+        body {
+            display: flex;
+            gap: 20px;
+            font-family: sans-serif;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <img id="moviePic" src="" alt="" />
+    </div>
+    <div>
+        <h1 id="movieOne"> Inception </h1>
+        <p id="dateRelease"></p>
+        <p id="movieDescription"></p>
+        <h4 id="movieGenre"></h4>
+    </div>
+</body>
+<script>
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    const movieId = params.get("id");
+
+    const movies = JSON.parse(localStorage.getItem("movies"));
+    const movie = movies.find((movie) => movie._id === movieId);
+
+    const genres = JSON.parse(localStorage.getItem("genres"));
+    const genre = genres.find((genre) => genre._id === movie?.genre);
+
+    document.getElementById("movieOne").innerText = movie?.title;
+    document.getElementById("movieDescription").innerText = movie?.description;
+    document.getElementById("movieGenre").innerText = genre?.title;
+    document.getElementById("moviePic").src = movie?.poster_url;
+    document.getElementById("dateRelease").innerText = movie?.release_date;
+
+    console.log(movie?.release_date)
+</script>
+
+</html>
