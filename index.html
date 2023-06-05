@@ -25,6 +25,10 @@
         <div class="row">
             <div class="col">
                 <!-- Table to display movies -->
+                <div class="search">
+                    <input type="text" class="form-control border-0 border-bottom" id="searchObject"
+                        placeholder="Search Movies Here">
+                </div>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -138,7 +142,7 @@
                                 required>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-primary">Update</button>
                     </form>
                 </div>
             </div>
@@ -167,7 +171,7 @@
                                 class="form-control" required></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>
@@ -178,6 +182,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script>
 
     <!-- JavaScript code -->
     <script>
@@ -250,12 +256,47 @@
                 // Fetch movies from API and store in localStorage
                 await fetch(`${url}/movies`)
                     .then(response => response.json())
-                    .then(movies => localStorage.setItem("movies", JSON.stringify(movies)))
+                    .then(movies => {
+                        const list = movies.map((movie) => {
+                            movie.genreTitle = getGenreTitle(movie.genre)
+                            return movie
+                        })
+                        localStorage.setItem("movies", JSON.stringify(list))
+                    })
+
                     .catch(error => console.log(error))
             }
 
             const movies = JSON.parse(localStorage.getItem("movies"))
+            generateTableMovies(movies)
 
+            let movie = movies
+            const searchObject = document.getElementById("searchObject")
+
+            searchObject.addEventListener("keyup", (event) => {
+                const searchLetter = event.target.value
+
+                if (searchLetter.length >= 3) {
+                    const options = {
+                        includeScore: true,
+                        keys: ['title', 'description', 'genreTitle']
+                    }
+                    const fuse = new Fuse(movie, options)
+
+                    const result = fuse.search(searchLetter)
+                    const searchOutput = result.map(letter => letter.item)
+                    console.log(result)
+                    generateTableMovies(searchOutput)
+                } else {
+                    generateTableMovies(movies)
+
+                }
+            })
+        }
+        getMovies()
+
+
+        function generateTableMovies(movies) {
             const movieTableBody = document.getElementById('movieTableBody')
             movieTableBody.innerHTML = ''
             let rows = ''
@@ -282,8 +323,8 @@
 
             movieTableBody.innerHTML = rows
         }
-        // Call the function to get movies
-        getMovies()
+
+
 
         // Function to open the new movie modal
         const openNewMovieModal = () => {
