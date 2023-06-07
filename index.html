@@ -88,7 +88,7 @@
 
                         <div class="mb-3">
                             <label for="poster_url" class="form-label">Poster URL</label>
-                            <input type="url" class="form-control" name="poster_url" id="poster_url" required>
+                            <input type="url" class="form-control" name="poster_url" id="poster_url">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -138,8 +138,8 @@
 
                         <div class="mb-3">
                             <label for="updateMoviePosterUrl" class="form-label">Poster URL</label>
-                            <input type="url" class="form-control" name="updateMoviePosterUrl" id="updateMoviePosterUrl"
-                                required>
+                            <input type="url" class="form-control" name="updateMoviePosterUrl"
+                                id="updateMoviePosterUrl">
                         </div>
 
                         <button type="submit" class="btn btn-primary">Update</button>
@@ -188,7 +188,7 @@
     <!-- JavaScript code -->
     <script>
         // API URL for CRUD operations
-        const url = 'https://crudcrud.com/api/7b18b62e2c4b438f83394fd1bba39499'
+        const url = 'https://647eff7bc246f166da8fdb07.mockapi.io/'
 
         // Function to get genres from API or localStorage
         const getGenres = async () => {
@@ -209,12 +209,13 @@
             genreDropdown.append(defaultGenreOption)
 
             for (let i = 0; i < genres.length; i++) {
-                // Create genre options and append to the dropdown
-                let option = document.createElement('option')
-                option.innerText = genres[i].title;
-                option.value = genres[i]._id
 
-                genreDropdown.append(option)
+                // Create genre options and append to the dropdown
+                let optionList = document.createElement('option')
+                optionList.innerText = genres[i].title;
+                optionList.value = genres[i]._id
+
+                genreDropdown.append(optionList)
             }
 
             let newGenreOption = document.createElement('option')
@@ -233,6 +234,7 @@
                     newGenreModal.show()
                 }
             })
+
         }
         // Call the function to get genres
         getGenres()
@@ -360,7 +362,7 @@
                 .then(response => response.json())
                 .then(result => {
                     const newMovieModal = bootstrap.Modal.getOrCreateInstance("#newMovieModal")
-                    newMovieModal.hide()
+                    newMovieModal.show()
 
                     // Remove movies from localStorage and refresh the movie list
                     localStorage.removeItem("movies")
@@ -500,7 +502,7 @@
                     newMovieModal.show()
 
                     // Remove genres from localStorage and refresh the genre list
-                    localStorage.removeItem("genres")
+                    newGenreForm.localStorage.removeItem("genres")
                     await getGenres()
 
                     // Clear form input fields
